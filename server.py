@@ -135,7 +135,7 @@ def unauth_test():
     if stderr:
         output += stderr + "\n"
 
-    MyOut = subprocess.Popen(['cf', 'login', '-u', 'andrew.lunde@sap.com', '-p', 'Rezin888!', '-o', 'ConcileTime', '-s', 'dev'],
+    MyOut = subprocess.Popen(['cf', 'login', '-u', 'andrew.lunde@sap.com', '-p', 'R!', '-o', 'ConcileTime', '-s', 'dev'],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
     stdout,stderr = MyOut.communicate()
