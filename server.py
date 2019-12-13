@@ -114,7 +114,8 @@ def unauth_test():
     stdout,stderr = MyOut.communicate()
 
     output += stdout.decode("utf-8") + "\n"
-    output += stderr + "\n"
+    if stderr:
+        output += stderr + "\n"
 
     MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'],
         stdout=subprocess.PIPE,
@@ -122,7 +123,8 @@ def unauth_test():
     stdout,stderr = MyOut.communicate()
 
     output += stdout.decode("utf-8") + "\n"
-    output += stderr + "\n"
+    if stderr:
+        output += stderr + "\n"
 
     MyOut = subprocess.Popen(['cf', 'api'],
         stdout=subprocess.PIPE,
@@ -130,7 +132,8 @@ def unauth_test():
     stdout,stderr = MyOut.communicate()
 
     output += stdout.decode("utf-8") + "\n"
-    output += stderr + "\n"
+    if stderr:
+        output += stderr + "\n"
 
     return output
 
