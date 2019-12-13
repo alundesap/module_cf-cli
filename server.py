@@ -67,8 +67,7 @@ def attach(port, host):
 def hello_world():
     output = '<strong>Hello World! I am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0)) + '</strong> Try these links.</br>\n'
     output += '<a href="/env">/env</a><br />\n'
-    output += '<a href="/headless/test">/headless/test</a><br />\n'
-    output += '<a href="/headless/chrome">/headless/chrome</a><br />\n'
+    output += '<a href="/cf-cli/test">/cf-cli/test</a><br />\n'
     output += '<a href="/headless/db_only">/headless/db_only</a><br />\n'
     output += '<a href="/auth_python/db_valid">/auth_python/db_valid</a><br />\n'
     return output
@@ -95,276 +94,44 @@ def dump_env():
 @app.route('/headless/links')
 def python_links():
     output = '<strong>Hello World! I am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0)) + '</strong> Try these links.</br>\n'
-    output += '<a href="/headless/test">/headless/test</a><br />\n'
-    output += '<a href="/headless/admin/links">/headless/admin/links</a><br />\n'
-    output += '<a href="/headless/chrome">/headless/chrome</a><br />\n'
+    output += '<a href="/cf-cli/test">/cf-cli/test</a><br />\n'
+    output += '<a href="/cf-cli/admin/links">/cf-cli/admin/links</a><br />\n'
     output += '<a href="/headless/db_only">/headless/db_only</a><br />\n'
     output += '<a href="/auth_python/db_valid">/auth_python/db_valid</a><br />\n'
     return output
 
 # If there is a request for a python/test, return Testing message and module's instance number
-@app.route('/headless/test')
+@app.route('/cf-cli/test')
 def unauth_test():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/headless/admin/links')
-def python_links():
+@app.route('/cf-cli/admin/links')
+def admin_python_links():
     output = '<strong>Password Administration</strong> Try these links.</br>\n'
-    output += '<a href="/headless/admin/getpw">/headless/admin/getpw</a><br />\n'
-    output += '<a href="/headless/admin/setpw">/headless/admin/setpw</a><br />\n'
-    output += '<a href="/headless/admin/delpw">/headless/admin/delpw</a><br />\n'
+    output += '<a href="/cf-cli/admin/getpw">/cf-cli/admin/getpw</a><br />\n'
+    output += '<a href="/cf-cli/admin/setpw">/cf-cli/admin/setpw</a><br />\n'
+    output += '<a href="/cf-cli/admin/delpw">/cf-cli/admin/delpw</a><br />\n'
     return output
 
-@app.route('/headless/admin/getpw')
+@app.route('/cf-cli/admin/getpw')
 def admin_getpw():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/headless/admin/setpw')
+@app.route('/cf-cli/admin/setpw')
 def admin_setpw():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/headless/admin/setpwres')
+@app.route('/cf-cli/admin/setpwres')
 def admin_setpwres():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/headless/admin/delpw')
+@app.route('/cf-cli/admin/delpw')
 def admin_delpw():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/headless/admin/delpwres')
+@app.route('/cf-cli/admin/delpwres')
 def admin_delpwres():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
-
-
-@app.route('/headless/chrome')
-def headless_chrome():
-    output = "<!DOCTYPE HTML>\n"
-    output += "<html>\n"
-    output += "<head>\n"
-    output += "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8' />\n"
-    output += "<title>chrome</title>\n"
-    output += "</head>\n"
-    output += "<h4>Headless Chrome</h4><br />\n"
-    output += '<body style="font-family: Tahoma, Geneva, sans-serif">\n'
-    output += '    <a href="/headless/pagelist" target="chrome">Captured Pages</a><br />\n'
-
-    try:
-        from selenium import webdriver
-        #https://github.com/cryzed/Selenium-Requests
-        #from seleniumrequests import webdriver
-        from selenium.webdriver.common.keys import Keys
-        from selenium.webdriver.common.action_chains import ActionChains
-        from selenium.webdriver.common.by import By
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as cond
-        from selenium.common.exceptions import ElementNotVisibleException
-
-        #https://w3c.github.io/webdriver/
-        options = webdriver.ChromeOptions()
-        options.binary_location = '/opt/google/chrome/chrome'
-        options.add_argument('headless')
-        options.add_argument('window-size=1200x600')
-        options.add_argument('no-sandbox')
-        options.add_argument('disable-dev-shm-usage')
-        driver = webdriver.Chrome(chrome_options=options)
-        driver.implicitly_wait(30)
-        #output += '    <p>' + request.args.get('page') + '</p><br />\n'
-        driver.get('https://account.us1.hana.ondemand.com/cockpit/#/globalaccount/aTeam/subaccounts')
-        #driver.get('https://www.conciletime.com')
-        #time.sleep(1)
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "j_username")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-
-        email = driver.find_element_by_id('j_username')
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page01.png')
-
-        email.send_keys('andrew@lunde.com') 
-        password = driver.find_element_by_id('j_password') 
-        password.send_keys('Xxxx###!')
-        login = driver.find_element_by_id('logOnFormSubmit') 
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page02.png')
-
-        login.click()
-        #time.sleep(2) 
-
-        try:
-            # Wait as long as required, or maximum of 10 sec for alert to appear
-            #WebDriverWait(driver,10).until(cond.alert_is_present())
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "__jsview1--addSubAccount")))
-
-            #Change over the control to the Alert window
-            #obj = driver.switch_to.alert
-
-            #Retrieve the message on the Alert window
-            #msg=obj.text
-            #print ("Alert shows following message: "+ msg )
-    
-            #Use the accept() method to accept the alert
-            #obj.accept()
-
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-
-
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page03.png')
-
-        #__jsview1--addSubAccount
-        #$("#__jsview1--addSubAccount").tap();
-        addSubaccount = driver.find_element_by_id('__jsview1--addSubAccount')
-        addSubaccount.click()
-        #time.sleep(1)
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--displayName-inner")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page04.png')
-        #CreateNewSubAccountDialog--displayName-inner
-        displayName = driver.find_element_by_id('CreateNewSubAccountDialog--displayName-inner')
-        #$("#CreateNewSubAccountDialog--displayName-inner").val("aokheadless");
-        displayName.send_keys('abcheadless')
-        #CreateNewSubAccountDialog--description-inner
-        description = driver.find_element_by_id('CreateNewSubAccountDialog--description-inner')
-        #$("#CreateNewSubAccountDialog--description-inner").val("Test subaccount creation via headless browser.");
-        description.send_keys('Test subaccount creation via headless browser.')
-        
-        #https://www.techbeamers.com/selenium-webdriver-coding-tips/
-        #Select dropdown = new Select(driver.findElement(By.xpath("//drop_down_x_path")));
-        #dropdown.deselectAll()
-        #dropdown.selectByVisibleText("selectLabel")
-
-        #CreateNewSubAccountDialog--environmentsCombo
-        #$("#CreateNewSubAccountDialog--environmentsCombo-hiddenInput").tap();
-        #$("#__item7-CreateNewSubAccountDialog--environmentsCombo-1").tap();
-        #environmentsCombo = driver.find_element_by_id('CreateNewSubAccountDialog--environmentsCombo')
-        #environmentsCombo.click()
-        #CreateNewSubAccountDialog--environmentsCombo-hiddenInput
-        #$("#CreateNewSubAccountDialog--environmentsCombo-labelText").html("Cloud Foundry")
-        #CreateNewSubAccountDialog--environmentsCombo
-        environmentsComboInput = driver.find_element_by_id('CreateNewSubAccountDialog--environmentsCombo')
-        #environmentsComboInput.send_keys('Cloud Foundry')
-        environmentsComboInput.click()
-        environmentsComboSelect = driver.find_element_by_id('__item7-CreateNewSubAccountDialog--environmentsCombo-1')
-        environmentsComboSelect.click()
-        #time.sleep(1)
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--providersCombo")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page05.png')
-        #CreateNewSubAccountDialog--providersCombo-hiddenInput
-        #$("#CreateNewSubAccountDialog--providersCombo-hiddenInput").tap();
-        #$("#__item8-CreateNewSubAccountDialog--providersCombo-0").tap();    # Amazon Web Services(AWS)
-        #$("#CreateNewSubAccountDialog--providersCombo-labelText").html("Amazon Web Services (AWS)")
-        providersComboInput = driver.find_element_by_id('CreateNewSubAccountDialog--providersCombo')
-        providersComboInput.click()
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "__item8-CreateNewSubAccountDialog--providersCombo-0")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        providersComboSelect = driver.find_element_by_id('__item8-CreateNewSubAccountDialog--providersCombo-0')
-        providersComboSelect.click()
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--regionsCombo")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page06.png')
-        ##Amazon Web Services (AWS)
-        #providersComboInput.send_keys('Amazon Web Services (AWS)')
-        ##CreateNewSubAccountDialog--regionsCombo-hiddenInput
-        #$("#CreateNewSubAccountDialog--regionsCombo-hiddenInput").tap();
-        #$("#__item9-CreateNewSubAccountDialog--regionsCombo-6").tap();
-        time.sleep(1)
-        regionsComboInput = driver.find_element_by_id('CreateNewSubAccountDialog--regionsCombo')
-        regionsComboInput.click()
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "__item9-CreateNewSubAccountDialog--regionsCombo-6")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        regionsComboSelect = driver.find_element_by_id('__item9-CreateNewSubAccountDialog--regionsCombo-6')
-        regionsComboSelect.click()
-        try:
-            WebDriverWait(driver,10).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--subdomain-inner")))
-        except (ElementNotVisibleException) as py_ex:
-            print("Element not visible.")
-            print (py_ex)
-            print (py_ex.args)
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page07.png')
-        ##US East (VA)
-        #regionsComboInput.send_keys('US East (VA)')
-        ##CreateNewSubAccountDialog--subdomain-inner
-        subdomain = driver.find_element_by_id('CreateNewSubAccountDialog--subdomain-inner')
-        #$("#CreateNewSubAccountDialog--subdomain-inner").val("abcheadless");
-        subdomain.send_keys('xyzheadless')
-        ##CreateNewSubAccountDialog--betaEnabledCF-CB
-        #$("#CreateNewSubAccountDialog--betaEnabledCF-CB").tap();
-        #$("#CreateNewSubAccountDialog--subdomain-inner").focus();
-        #$("#CreateNewSubAccountDialog--subdomain-inner").next().next().next().focus();
-        #displayName.sendKeys(Keys.TAB)
-        subdomain.send_keys(Keys.TAB)
-        #try:
-        #    WebDriverWait(driver,20).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--betaEnabledCF-CB")))
-        #except (ElementNotVisibleException) as py_ex:
-        #    print("Element not visible.")
-        #    print (py_ex)
-        #    print (py_ex.args)
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page08.png')
-        #betaEnabledCF = driver.find_element_by_id('CreateNewSubAccountDialog--betaEnabledCF-CB')
-        #betaEnabledCF.click()
-        #try:
-        #    WebDriverWait(driver,5).until(cond.visibility_of_element_located((By.ID, "__button11")))
-        #except (ElementNotVisibleException) as py_ex:
-        #    print("Element not visible.")
-        #    print (py_ex)
-        #    print (py_ex.args)
-        ##__button11 #Create Button
-        #$("#__button11").tap();
-        #__button24
-        #$("#__button24").mouseup();
-        createButton = driver.find_element_by_id('__button11')
-        #time.sleep(1)
-        createButton.click()
-        time.sleep(1)
-        try:
-            WebDriverWait(driver,2).until(cond.visibility_of_element_located((By.ID, "CreateNewSubAccountDialog--errorStrip")))
-            output += "subDomain taken!"
-        except (ElementNotVisibleException) as py_ex:
-            output += "subDomain is OK!"
-
-        driver.get_screenshot_as_file('/root/app/pages/' + 'page09.png')
-        ##__popover8
-        #doneMessage = driver.find_element_by_id('__popover8')
-        #time.sleep(1)
-        ##time.sleep(1)
-        #driver.get_screenshot_as_file('/root/app/pages/' + 'page09.png')
-        driver.quit()
-
-    except:
-        import traceback;traceback.print_exc() 
-
-    output += "</body>\n"
-    output += "</html>\n"
-    output += '\n'
-    return Response(output, mimetype='text/html' , status=200,)
-
-@app.route('/headless/pagelist')
-def headless_page_list():
-    return send_from_directory('/root/app/pages', 'index.html', mimetype='text/html')
 
 @app.route('/headless/pages')
 def headless_pages():
