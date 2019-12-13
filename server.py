@@ -135,6 +135,25 @@ def unauth_test():
     if stderr:
         output += stderr + "\n"
 
+    MyOut = subprocess.Popen(['cf', 'login', '-u', 'andrew.lunde@sap.com', '-p', 'Rezin8881', '-o', 'ConcileTime', '-s', 'dev'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    if stderr:
+        output += stderr + "\n"
+
+    MyOut = subprocess.Popen(['cf', 'a'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    if stderr:
+        output += stderr + "\n"
+
+
     return output
 
 @app.route('/cf-cli/admin/links')
