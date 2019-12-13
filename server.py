@@ -9,6 +9,7 @@ from flask import Response
 from flask import send_from_directory
 #   
 import os
+import subprocess
 #import pyhdb
 # Downloading pyhdb-0.3.3.tar.gz
 import json
@@ -103,7 +104,35 @@ def python_links():
 # If there is a request for a python/test, return Testing message and module's instance number
 @app.route('/cf-cli/test')
 def unauth_test():
-    return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
+
+
+    output = '\n'
+
+    MyOut = subprocess.Popen(['cf', 'api'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    output += stderr.decode("utf-8") + "\n"
+
+    MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    output += stderr.decode("utf-8") + "\n"
+
+    MyOut = subprocess.Popen(['cf', 'api'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    output += stderr.decode("utf-8") + "\n"
+
+    return output
 
 @app.route('/cf-cli/admin/links')
 def admin_python_links():
