@@ -178,11 +178,11 @@ def admin_getpw():
 def admin_setpw():
     output = '<strong>Password Administration</strong> Try these links.</br>\n'
     output += '<form action="/cf-cli/admin/setpw_result" method="post">\n'
-    output += '<ul style="list-style-type: none;">\n'
-    output += '  <li>User Name: <input type="text" name="username" size="30" maxlength="25"></li>\n'
-    output += '  <li>Password: <input type="password" name="password" size="30" maxlength="25"></li>\n'
-    output += '  <li><button type="submit">Submit</button></li>\n'
-    output += '</ul>\n'
+    output += '<table cellspacing="0" cellpadding="0">\n'
+    output += '  <tr><td align="right">User Name:</td><td align="left"><input type="text" name="username" size="30" maxlength="25"></td></tr>\n'
+    output += '  <tr><td align="right">Password:</td><td align="left"><input type="password" name="password" size="30" maxlength="25"></td></tr>\n'
+    output += '  <tr><td align="right"></td><td align="left"><button type="submit">Submit</button></td></tr>\n'
+    output += '</table>\n'
     output += '</form>\n'
     return output
 
