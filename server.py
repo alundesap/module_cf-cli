@@ -176,7 +176,7 @@ def admin_getpw():
 
 @app.route('/cf-cli/admin/setpw')
 def admin_setpw():
-    output = '<strong>Password Administration</strong> Try these links.</br>\n'
+    output = '<strong>Password Administration</strong></br>\n'
     output += '<form action="/cf-cli/admin/setpw_result" method="post">\n'
     output += '<table cellspacing="0" cellpadding="0">\n'
     output += '  <tr><td align="right">User Name:</td><td align="left"><input type="text" name="username" size="30" maxlength="25"></td></tr>\n'
@@ -186,9 +186,13 @@ def admin_setpw():
     output += '</form>\n'
     return output
 
-@app.route('/cf-cli/admin/setpw_result')
+@app.route('/cf-cli/admin/setpw_result', methods=['POST'])
 def admin_setpw_result():
-    return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
+    output = '<strong>Password Administration Result</strong></br>\n'
+    content = JSON.stringify(request)
+    output += content
+    output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
+    return output
 
 @app.route('/cf-cli/admin/setpwres')
 def admin_setpwres():
