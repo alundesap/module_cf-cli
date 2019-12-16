@@ -189,8 +189,15 @@ def admin_setpw():
 @app.route('/cf-cli/admin/setpw_result', methods=['POST'])
 def admin_setpw_result():
     output = '<strong>Password Administration Result</strong></br>\n'
-    content = request
-    output += content
+    user = 'unknown'
+    pass = 'unknown'
+    if request.method == 'POST':
+        user = request.form['username']
+        pass = request.form['password']
+
+    output += 'User: ' + user + '\n'
+    output += 'Pass: ' + pass + '\n'
+
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
 
