@@ -138,7 +138,7 @@ def unauth_test():
     if stderr:
         output += stderr + "\n"
 
-    MyOut = subprocess.Popen(['cf', 'login', '-u', 'andrew.lunde@sap.com', '-p', 'R!', '-o', 'ConcileTime', '-s', 'dev'],
+    MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
     stdout,stderr = MyOut.communicate()
@@ -163,6 +163,7 @@ def unauth_test():
 def admin_python_home():
     output = '<strong>Password Administration</strong> Try these links.</br>\n'
     output += '<a href="/cf-cli/admin/links">/cf-cli/admin/links</a><br />\n'
+    output += '<a href="/cf-cli/test">/cf-cli/test</a><br />\n'
     return output
 
 @app.route('/cf-cli/admin/links')
@@ -243,6 +244,7 @@ def admin_getpw():
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
         cliusr = retrieved
+        retrieved = "*****"
         output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 #    # Close the DB connection
