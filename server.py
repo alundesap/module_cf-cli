@@ -109,7 +109,9 @@ def python_links():
 def unauth_test():
 
 
-    output = '\n'
+    output = "CLIUser: " + cliusr + " CLIPass: " + clipwd + "<br />\n"
+
+    return output
 
     MyOut = subprocess.Popen(['cf', 'api'],
         stdout=subprocess.PIPE,
