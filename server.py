@@ -92,7 +92,7 @@ def dump_env():
     return output
 
 # Coming through the app-router
-@app.route('/headless/links')
+@app.route('/cf-cli/links')
 def python_links():
     output = '<strong>Hello World! I am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0)) + '</strong> Try these links.</br>\n'
     output += '<a href="/cf-cli/test">/cf-cli/test</a><br />\n'
@@ -154,6 +154,12 @@ def unauth_test():
         output += stderr + "\n"
 
 
+    return output
+
+@app.route('/cf-cli/admin')
+def admin_python_links():
+    output = '<strong>Password Administration</strong> Try these links.</br>\n'
+    output += '<a href="/cf-cli/admin/links">/cf-cli/admin/links</a><br />\n'
     return output
 
 @app.route('/cf-cli/admin/links')
