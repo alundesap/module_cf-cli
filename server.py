@@ -188,11 +188,11 @@ def admin_getpw():
     if 'certificate' in hanass.credentials:
         haascert = hanass.credentials['certificate']
 
-    output += 'schema: ' + schema + '\n'
-    output += 'host: ' + host + '\n'
-    output += 'port: ' + port + '\n'
-    output += 'user: ' + user + '\n'
-    output += 'pass: ' + password + '\n'
+    output += 'schema: ' + schema + '<br >\n'
+    output += 'host: ' + host + '<br >\n'
+    output += 'port: ' + port + '<br >\n'
+    output += 'user: ' + user + '<br >\n'
+    output += 'pass: ' + password + '<br >\n'
 
 #    # Connect to the python HANA DB driver using the connection info
 # User for HANA as a Service instances
@@ -229,21 +229,21 @@ def admin_getpw():
     hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIUserName", None))
 
     if hexvalue[3] is None:
-        output += 'key CLIUserName does not exist in store ConcileStore.  Try inserting a value first.' + '\n'
+        output += 'key CLIUserName does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
         cliusr = retrieved
-        output += 'key CLIUserName with value ' + retrieved + ' was retrieved from store ConcileStore.' + '\n'
+        output += 'key CLIUserName with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 
     hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIPassWord", None))
 
     if hexvalue[3] is None:
-        output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '\n'
+        output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
         cliusr = retrieved
-        output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '\n'
+        output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 #    # Close the DB connection
     connection.close()
