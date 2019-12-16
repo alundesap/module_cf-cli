@@ -157,7 +157,7 @@ def unauth_test():
     return output
 
 @app.route('/cf-cli/admin')
-def admin_python_links():
+def admin_python_home():
     output = '<strong>Password Administration</strong> Try these links.</br>\n'
     output += '<a href="/cf-cli/admin/links">/cf-cli/admin/links</a><br />\n'
     return output
