@@ -275,6 +275,7 @@ def admin_setpw_result():
 
 @app.route('/cf-cli/admin/delpw')
 def admin_delpw():
+    output = '<strong>Password Deletion</strong></br>\n'
 
     schema = hanass.credentials['schema']
     host = hanass.credentials['host']
@@ -287,11 +288,11 @@ def admin_delpw():
     if 'certificate' in hana.credentials:
         haascert = hana.credentials['certificate']
 
-    output += 'schema: ' + schema + '\n'
-    output += 'host: ' + host + '\n'
-    output += 'port: ' + port + '\n'
-    output += 'user: ' + user + '\n'
-    output += 'pass: ' + password + '\n'
+    output += 'schema: ' + schema + '<br />\n'
+    output += 'host: ' + host + '<br />\n'
+    output += 'port: ' + port + '<br />\n'
+    output += 'user: ' + user + '<br />\n'
+    output += 'pass: ' + password + '<br />\n'
 
 #    # Connect to the python HANA DB driver using the connection info
 # User for HANA as a Service instances
@@ -327,7 +328,7 @@ def admin_delpw():
 #    # Close the DB connection
     connection.close()
 
-    output += 'key CLIUserName and CLIPassWord were deleted from store ConcileStore.' + '\n'
+    output += 'key CLIUserName and CLIPassWord were deleted from store ConcileStore.' + '<br />\n'
 
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
