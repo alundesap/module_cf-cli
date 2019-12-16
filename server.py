@@ -189,7 +189,7 @@ def admin_setpw():
 @app.route('/cf-cli/admin/setpw_result', methods=['POST'])
 def admin_setpw_result():
     output = '<strong>Password Administration Result</strong></br>\n'
-    content = JSON.stringify(request)
+    content = request
     output += content
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
