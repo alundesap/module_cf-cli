@@ -186,7 +186,7 @@ def admin_setpw():
     output += '</form>\n'
     return output
 
-@@app.route('/cf-cli/admin/setpw_result')
+@app.route('/cf-cli/admin/setpw_result')
 def admin_setpw_result():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
