@@ -111,8 +111,6 @@ def unauth_test():
 
     output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "<br />\n"
 
-    return output
-
     MyOut = subprocess.Popen(['cf', 'api'],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
