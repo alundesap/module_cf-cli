@@ -109,7 +109,7 @@ def python_links():
 def unauth_test():
 
 
-    output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "<br />\n"
+    output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
 
     MyOut = subprocess.Popen(['cf', 'api'],
         stdout=subprocess.PIPE,
@@ -156,8 +156,7 @@ def unauth_test():
     if stderr:
         output += stderr + "\n"
 
-
-    return output
+    return Response(output, mimetype='text/plain' , status=200,)
 
 @app.route('/cf-cli/admin')
 def admin_python_home():
