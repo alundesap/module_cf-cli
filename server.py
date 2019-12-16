@@ -286,11 +286,11 @@ def admin_setpw_result():
     if 'certificate' in hanass.credentials:
         haascert = hanass.credentials['certificate']
 
-    output += 'schema: ' + schema + '\n'
-    output += 'host: ' + host + '\n'
-    output += 'port: ' + port + '\n'
-    output += 'user: ' + user + '\n'
-    output += 'pass: ' + password + '\n'
+    output += 'schema: ' + schema + '<br >\n'
+    output += 'host: ' + host + '<br >\n'
+    output += 'port: ' + port + '<br >\n'
+    output += 'user: ' + user + '<br >\n'
+    output += 'pass: ' + password + '<br >\n'
 
 #    # Connect to the python HANA DB driver using the connection info
 # User for HANA as a Service instances
@@ -330,20 +330,20 @@ def admin_setpw_result():
 
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIUserName", hex2store))
-        output += 'key CLIUserName with value ' + usr + '=' + hex2store + ' was inserted into store ConcileStore.' + '\n'
+        output += 'key CLIUserName with value ' + usr + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
         cliusr = usr
     except:
-        output += 'key CLIUserName likely already exists. Try deleting first.' + '\n'
+        output += 'key CLIUserName likely already exists. Try deleting first.' + '<br >\n'
 
     string2store = pwd
     hex2store = (codecs.encode(str.encode(string2store), "hex")).decode()
 
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIPassWord", hex2store))
-        output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '\n'
+        output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
         clipwd = pwd
     except:
-        output += 'key CLIUserPass likely already exists. Try deleting first.' + '\n'
+        output += 'key CLIUserPass likely already exists. Try deleting first.' + '<br >\n'
 
 #    # Close the DB connection
     connection.close()
