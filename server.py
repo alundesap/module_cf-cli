@@ -180,6 +180,9 @@ def admin_python_links():
 def admin_getpw():
     output = '<strong>Password Administration Current</strong></br>\n'
 
+    global cliusr
+    global clipwd
+
     schema = hanass.credentials['schema']
     host = hanass.credentials['host']
     port = hanass.credentials['port']
@@ -270,6 +273,10 @@ def admin_setpw():
 @app.route('/cf-cli/admin/setpw_result', methods=['POST'])
 def admin_setpw_result():
     output = '<strong>Password Administration Result</strong></br>\n'
+
+    global cliusr
+    global clipwd
+
     usr = 'unknown'
     pwd  = 'unknown'
     if request.method == 'POST':
@@ -359,6 +366,9 @@ def admin_setpw_result():
 def admin_delpw():
     output = '<strong>Password Deletion</strong></br>\n'
 
+    global cliusr
+    global clipwd
+
     schema = hanass.credentials['schema']
     host = hanass.credentials['host']
     port = hanass.credentials['port']
@@ -406,6 +416,9 @@ def admin_delpw():
 #    # Form an SQL statement
     cursor.callproc("SYS.USER_SECURESTORE_DELETE", ("ConcileStore", False, "CLIUserName"))
     cursor.callproc("SYS.USER_SECURESTORE_DELETE", ("ConcileStore", False, "CLIPassWord"))
+
+    cliusr = ""
+    clipwd = ""
 
 #    # Close the DB connection
     connection.close()
