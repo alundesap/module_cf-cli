@@ -109,7 +109,7 @@ def python_links():
 def unauth_test():
 
 
-    output = "CLIUser: " + cliusr + " CLIPass: " + clipwd + "<br />\n"
+    output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "<br />\n"
 
     return output
 
@@ -248,7 +248,7 @@ def admin_getpw():
         output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
-        cliusr = retrieved
+        clipwd = retrieved
         retrieved = "*****"
         output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
@@ -284,7 +284,7 @@ def admin_setpw_result():
         pwd  = request.form['password']
 
     output += 'User: ' + usr + '<br />\n'
-    output += 'Pass: ' + pwd + '<br />\n'
+    output += 'Pass: ' + "*****" + '<br />\n'
 
     schema = hanass.credentials['schema']
     host = hanass.credentials['host']
@@ -351,7 +351,7 @@ def admin_setpw_result():
 
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIPassWord", hex2store))
-        output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
+        output += 'key CLIUserPass with value ' + "*****" + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
         clipwd = pwd
     except:
         output += 'key CLIUserPass likely already exists. Try deleting first.' + '<br >\n'
