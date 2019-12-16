@@ -40,6 +40,8 @@ env = AppEnv()
 port = int(os.getenv("PORT", 9099))
 hana = env.get_service(name='CONCILE_HDB')
 hanass = env.get_service(name='CONCILE_SS')
+cliusr = ""
+clipwd = ""
 
 def attach(port, host):
     try:
@@ -173,7 +175,81 @@ def admin_python_links():
 
 @app.route('/cf-cli/admin/getpw')
 def admin_getpw():
-    return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
+    output = '<strong>Password Administration Current</strong></br>\n'
+
+    schema = hanass.credentials['schema']
+    host = hanass.credentials['host']
+    port = hanass.credentials['port']
+    user = hanass.credentials['user']
+    password = hanass.credentials['password']
+
+    # The certificate will available for HANA service instances that require an encrypted connection
+    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
+    if 'certificate' in hanass.credentials:
+        haascert = hanass.credentials['certificate']
+
+    output += 'schema: ' + schema + '\n'
+    output += 'host: ' + host + '\n'
+    output += 'port: ' + port + '\n'
+    output += 'user: ' + user + '\n'
+    output += 'pass: ' + password + '\n'
+
+#    # Connect to the python HANA DB driver using the connection info
+# User for HANA as a Service instances
+    if 'certificate' in hanass.credentials:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema,
+            encrypt="true",
+            sslValidateCertificate="true",
+            sslCryptoProvider="openssl",
+            sslTrustStore=haascert
+        )
+    else:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema
+        )
+
+    #    # Prep a cursor for SQL execution
+    cursor = connection.cursor()
+
+#    # Form an SQL statement to retrieve some data
+
+#https://blogs.sap.com/2017/07/26/sap-hana-2.0-sps02-new-feature-updated-python-driver/
+
+    import codecs
+
+    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIUserName", None))
+
+    if hexvalue[3] is None:
+        output += 'key CLIUserName does not exist in store ConcileStore.  Try inserting a value first.' + '\n'
+    else:
+        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
+        cliusr = retrieved
+        output += 'key CLIUserName with value ' + retrieved + ' was retrieved from store ConcileStore.' + '\n'
+
+
+    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIPassWord", None))
+
+    if hexvalue[3] is None:
+        output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '\n'
+    else:
+        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
+        cliusr = retrieved
+        output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '\n'
+
+#    # Close the DB connection
+    connection.close()
+
+    output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
+    return output
 
 @app.route('/cf-cli/admin/setpw')
 def admin_setpw():
@@ -255,6 +331,7 @@ def admin_setpw_result():
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIUserName", hex2store))
         output += 'key CLIUserName with value ' + usr + '=' + hex2store + ' was inserted into store ConcileStore.' + '\n'
+        cliusr = usr
     except:
         output += 'key CLIUserName likely already exists. Try deleting first.' + '\n'
 
@@ -264,6 +341,7 @@ def admin_setpw_result():
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIPassWord", hex2store))
         output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '\n'
+        clipwd = pwd
     except:
         output += 'key CLIUserPass likely already exists. Try deleting first.' + '\n'
 
