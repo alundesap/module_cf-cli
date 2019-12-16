@@ -262,7 +262,7 @@ def admin_setpw_result():
     hex2store = (codecs.encode(str.encode(string2store), "hex")).decode()
 
     try:
-        cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIUserName", hex2store))
+        cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIPassWord", hex2store))
         output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '\n'
     except:
         output += 'key CLIUserPass likely already exists. Try deleting first.' + '\n'
@@ -273,16 +273,67 @@ def admin_setpw_result():
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
 
-@app.route('/cf-cli/admin/setpwres')
-def admin_setpwres():
-    return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
-
 @app.route('/cf-cli/admin/delpw')
 def admin_delpw():
-    return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
-@app.route('/cf-cli/admin/delpwres')
-def admin_delpwres():
+    schema = hanass.credentials['schema']
+    host = hanass.credentials['host']
+    port = hanass.credentials['port']
+    user = hanass.credentials['user']
+    password = hanass.credentials['password']
+
+    # The certificate will available for HANA service instances that require an encrypted connection
+    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
+    if 'certificate' in hana.credentials:
+        haascert = hana.credentials['certificate']
+
+    output += 'schema: ' + schema + '\n'
+    output += 'host: ' + host + '\n'
+    output += 'port: ' + port + '\n'
+    output += 'user: ' + user + '\n'
+    output += 'pass: ' + password + '\n'
+
+#    # Connect to the python HANA DB driver using the connection info
+# User for HANA as a Service instances
+    if 'certificate' in hanass.credentials:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema,
+            encrypt="true",
+            sslValidateCertificate="true",
+            sslCryptoProvider="openssl",
+            sslTrustStore=haascert
+        )
+    else:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema
+        )
+
+
+#    # Prep a cursor for SQL execution
+    cursor = connection.cursor()
+
+#    # Form an SQL statement
+    cursor.callproc("SYS.USER_SECURESTORE_DELETE", ("ConcileStore", False, "CLIUserName"))
+    cursor.callproc("SYS.USER_SECURESTORE_DELETE", ("ConcileStore", False, "CLIPassWord"))
+
+#    # Close the DB connection
+    connection.close()
+
+    output += 'key CLIUserName and CLIPassWord were deleted from store ConcileStore.' + '\n'
+
+    output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
+    return output
+
+@app.route('/cf-cli/admin/delpw_result')
+def admin_delpw_result():
     return 'Python UnAuthorized Test, Yo! <br />\nI am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0))
 
 @app.route('/headless/pages')
