@@ -290,49 +290,10 @@ def admin_setpw_result():
     output += 'User: ' + usr + '<br />\n'
     output += 'Pass: ' + "*****" + '<br />\n'
 
-    schema = hanass.credentials['schema']
-    host = hanass.credentials['host']
-    port = hanass.credentials['port']
-    user = hanass.credentials['user']
-    password = hanass.credentials['password']
-
-    # The certificate will available for HANA service instances that require an encrypted connection
-    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
-    if 'certificate' in hanass.credentials:
-        haascert = hanass.credentials['certificate']
-
-    output += 'schema: ' + schema + '<br >\n'
-    output += 'host: ' + host + '<br >\n'
-    output += 'port: ' + port + '<br >\n'
-    output += 'user: ' + user + '<br >\n'
-    output += 'pass: ' + password + '<br >\n'
-
-#    # Connect to the python HANA DB driver using the connection info
-# User for HANA as a Service instances
-    if 'certificate' in hanass.credentials:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema,
-            encrypt="true",
-            sslValidateCertificate="true",
-            sslCryptoProvider="openssl",
-            sslTrustStore=haascert
-        )
-    else:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema
-        )
-
+    ss_conn = get_conn(hanass)
 
 #    # Prep a cursor for SQL execution
-    cursor = connection.cursor()
+    cursor = ss_conn.cursor()
 
 #    # Form an SQL statement to retrieve some data
 
@@ -361,7 +322,7 @@ def admin_setpw_result():
         output += 'key CLIUserPass likely already exists. Try deleting first.' + '<br >\n'
 
 #    # Close the DB connection
-    connection.close()
+    ss_conn.close()
 
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
@@ -373,49 +334,10 @@ def admin_delpw():
     global cliusr
     global clipwd
 
-    schema = hanass.credentials['schema']
-    host = hanass.credentials['host']
-    port = hanass.credentials['port']
-    user = hanass.credentials['user']
-    password = hanass.credentials['password']
-
-    # The certificate will available for HANA service instances that require an encrypted connection
-    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
-    if 'certificate' in hana.credentials:
-        haascert = hana.credentials['certificate']
-
-    output += 'schema: ' + schema + '<br />\n'
-    output += 'host: ' + host + '<br />\n'
-    output += 'port: ' + port + '<br />\n'
-    output += 'user: ' + user + '<br />\n'
-    output += 'pass: ' + password + '<br />\n'
-
-#    # Connect to the python HANA DB driver using the connection info
-# User for HANA as a Service instances
-    if 'certificate' in hanass.credentials:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema,
-            encrypt="true",
-            sslValidateCertificate="true",
-            sslCryptoProvider="openssl",
-            sslTrustStore=haascert
-        )
-    else:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema
-        )
-
+    ss_conn = get_conn(hanass)
 
 #    # Prep a cursor for SQL execution
-    cursor = connection.cursor()
+    cursor = ss_conn.cursor()
 
 #    # Form an SQL statement
     cursor.callproc("SYS.USER_SECURESTORE_DELETE", ("ConcileStore", False, "CLIUserName"))
@@ -425,7 +347,7 @@ def admin_delpw():
     clipwd = ""
 
 #    # Close the DB connection
-    connection.close()
+    ss_conn.close()
 
     output += 'key CLIUserName and CLIPassWord were deleted from store ConcileStore.' + '<br />\n'
 
