@@ -145,7 +145,7 @@ def get_unpw():
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
         clipwd = retrieved
-        retrieved = "*****"
+        #retrieved = "*****"
         output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 #    # Close the DB connection
@@ -295,7 +295,8 @@ def admin_setpw_result():
         pwd  = request.form['password']
 
     output += 'User: ' + usr + '<br />\n'
-    output += 'Pass: ' + "*****" + '<br />\n'
+    #output += 'Pass: ' + "*****" + '<br />\n'
+    output += 'Pass: ' + pwd + '<br />\n'
 
     ss_conn = get_conn(hanass)
 
@@ -323,7 +324,8 @@ def admin_setpw_result():
 
     try:
         cursor.callproc("SYS.USER_SECURESTORE_INSERT", ("ConcileStore", False, "CLIPassWord", hex2store))
-        output += 'key CLIUserPass with value ' + "*****" + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
+        #output += 'key CLIUserPass with value ' + "*****" + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
+        output += 'key CLIUserPass with value ' + pwd + '=' + hex2store + ' was inserted into store ConcileStore.' + '<br >\n'
         clipwd = pwd
     except:
         output += 'key CLIUserPass likely already exists. Try deleting first.' + '<br >\n'
