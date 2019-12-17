@@ -200,10 +200,12 @@ def unauth_test():
 
     global loggedin
 
-    if ((not cliusr) and (not clipwd)):
+    output = ""
+
+    if (not cliusr) and (not clipwd):
         output += get_unpw()
 
-    output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
+    output += "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
 
     return Response(output, mimetype='text/plain' , status=200,)
 
