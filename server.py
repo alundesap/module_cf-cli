@@ -145,7 +145,7 @@ def get_unpw():
     else:
         retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
         clipwd = retrieved
-        #retrieved = "*****"
+        retrieved = "*****"
         output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 #    # Close the DB connection
