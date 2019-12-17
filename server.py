@@ -207,7 +207,7 @@ def unauth_test():
 
     output += "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
 
-    return Response(output, mimetype='text/plain' , status=200,)
+    #return Response(output, mimetype='text/plain' , status=200,)
 
     if not loggedin:
 
