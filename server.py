@@ -227,7 +227,7 @@ def unauth_test():
 
         loggedin = True
 
-    //Assume logged in here
+    # Assume logged in here
     MyOut = subprocess.Popen(['cf', 'a'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout,stderr = MyOut.communicate()
 
