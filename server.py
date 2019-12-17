@@ -109,6 +109,50 @@ def get_conn(hana):
 
     return connection
        
+def get_unpw():
+
+    global cliusr
+    global clipwd
+
+    output = ""
+
+    ss_conn = get_conn(hanass)
+
+    # Prep a cursor for SQL execution
+    cursor = ss_conn.cursor()
+
+    # Form an SQL statement to retrieve some data
+
+#https://blogs.sap.com/2017/07/26/sap-hana-2.0-sps02-new-feature-updated-python-driver/
+
+    import codecs
+
+    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIUserName", None))
+
+    if hexvalue[3] is None:
+        output += 'key CLIUserName does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
+    else:
+        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
+        cliusr = retrieved
+        output += 'key CLIUserName with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
+
+
+    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIPassWord", None))
+
+    if hexvalue[3] is None:
+        output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
+    else:
+        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
+        clipwd = retrieved
+        retrieved = "*****"
+        output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
+
+#    # Close the DB connection
+    ss_conn.close()
+
+    return output
+
+
 # This module's Flask webserver will respond to these three routes (URL paths)
 # If there is no path then just return Hello World and this module's instance number
 # Requests passed through the app-router will never hit this route.
@@ -153,8 +197,12 @@ def python_links():
 @app.route('/cf-cli/test')
 def unauth_test():
 
+    if ((not cliusr) && (not clipwd)):
+        output += get_unpw()
 
     output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
+
+    return Response(output, mimetype='text/plain' , status=200,)
 
     MyOut = subprocess.Popen(['cf', 'api'],
         stdout=subprocess.PIPE,
@@ -225,39 +273,7 @@ def admin_getpw():
     global cliusr
     global clipwd
 
-    ss_conn = get_conn(hanass)
-
-    # Prep a cursor for SQL execution
-    cursor = ss_conn.cursor()
-
-    # Form an SQL statement to retrieve some data
-
-#https://blogs.sap.com/2017/07/26/sap-hana-2.0-sps02-new-feature-updated-python-driver/
-
-    import codecs
-
-    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIUserName", None))
-
-    if hexvalue[3] is None:
-        output += 'key CLIUserName does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
-    else:
-        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
-        cliusr = retrieved
-        output += 'key CLIUserName with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
-
-
-    hexvalue = cursor.callproc("SYS.USER_SECURESTORE_RETRIEVE", ("ConcileStore", False, "CLIPassWord", None))
-
-    if hexvalue[3] is None:
-        output += 'key CLIPassWord does not exist in store ConcileStore.  Try inserting a value first.' + '<br >\n'
-    else:
-        retrieved = codecs.decode(hexvalue[3].hex(), "hex").decode()
-        clipwd = retrieved
-        retrieved = "*****"
-        output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
-
-#    # Close the DB connection
-    ss_conn.close()
+    output += get_unpw()
 
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
