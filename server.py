@@ -220,6 +220,7 @@ def unauth_test():
         if stderr:
             output += stderr + "\n"
 
+        #return Response(output, mimetype='text/plain' , status=200,)
 
         MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout,stderr = MyOut.communicate()
