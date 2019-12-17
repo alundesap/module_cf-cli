@@ -257,7 +257,7 @@ def admin_getpw():
         output += 'key CLIPassWord with value ' + retrieved + ' was retrieved from store ConcileStore.' + '<br >\n'
 
 #    # Close the DB connection
-    connection.close()
+    ss_conn.close()
 
     output += '<a href="/cf-cli/admin">Back to Admin</a><br />\n'
     return output
