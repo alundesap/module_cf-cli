@@ -211,6 +211,9 @@ def unauth_test():
 
     if not loggedin:
 
+        output += "Logging Into CF CLI." + "\n\n"
+        return Response(output, mimetype='text/plain' , status=200,)
+        
         MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout,stderr = MyOut.communicate()
 
@@ -218,9 +221,7 @@ def unauth_test():
         if stderr:
             output += stderr + "\n"
 
-        MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+        MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout,stderr = MyOut.communicate()
 
         output += stdout.decode("utf-8") + "\n"
@@ -230,12 +231,12 @@ def unauth_test():
         loggedin = True
 
     # Assume logged in here
-    MyOut = subprocess.Popen(['cf', 'a'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout,stderr = MyOut.communicate()
-
-    output += stdout.decode("utf-8") + "\n"
-    if stderr:
-        output += stderr + "\n"
+#    MyOut = subprocess.Popen(['cf', 'a'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#    stdout,stderr = MyOut.communicate()
+#
+#    output += stdout.decode("utf-8") + "\n"
+#    if stderr:
+#        output += stderr + "\n"
 
     return Response(output, mimetype='text/plain' , status=200,)
 
