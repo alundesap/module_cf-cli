@@ -40,6 +40,8 @@ env = AppEnv()
 port = int(os.getenv("PORT", 9099))
 hana = env.get_service(name='CONCILE_HDB')
 hanass = env.get_service(name='CONCILE_SS')
+db_conn = ""
+ss_conn = ""
 cliusr = ""
 clipwd = ""
 
@@ -63,7 +65,50 @@ def attach(port, host):
     except:
         import traceback;traceback.print_exc() 
         
-        
+def get_conn(hana):
+ 
+    schema = hana.credentials['schema']
+    host = hana.credentials['host']
+    port = hana.credentials['port']
+    user = hana.credentials['user']
+    password = hana.credentials['password']
+
+    # The certificate will available for HANA service instances that require an encrypted connection
+    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
+    if 'certificate' in hana.credentials:
+        haascert = hana.credentials['certificate']
+
+    #output += 'schema: ' + schema + '<br >\n'
+    #output += 'host: ' + host + '<br >\n'
+    #output += 'port: ' + port + '<br >\n'
+    #output += 'user: ' + user + '<br >\n'
+    #output += 'pass: ' + password + '<br >\n'
+
+#    # Connect to the python HANA DB driver using the connection info
+# User for HANA as a Service instances
+    if 'certificate' in hana.credentials:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema,
+            encrypt="true",
+            sslValidateCertificate="true",
+            sslCryptoProvider="openssl",
+            sslTrustStore=haascert
+        )
+    else:
+        connection = dbapi.connect(
+            address=host,
+            port=int(port),
+            user=user,
+            password=password,
+            currentSchema=schema
+        )
+
+    return connection
+       
 # This module's Flask webserver will respond to these three routes (URL paths)
 # If there is no path then just return Hello World and this module's instance number
 # Requests passed through the app-router will never hit this route.
@@ -180,50 +225,12 @@ def admin_getpw():
     global cliusr
     global clipwd
 
-    schema = hanass.credentials['schema']
-    host = hanass.credentials['host']
-    port = hanass.credentials['port']
-    user = hanass.credentials['user']
-    password = hanass.credentials['password']
+    ss_conn = get_comm(hanass)
 
-    # The certificate will available for HANA service instances that require an encrypted connection
-    # Note: This was tested to work with python hdbcli-2.3.112 tar.gz package not hdbcli-2.3.14 provided in XS_PYTHON00_0-70003433.ZIP
-    if 'certificate' in hanass.credentials:
-        haascert = hanass.credentials['certificate']
+    # Prep a cursor for SQL execution
+    cursor = ss_conn.cursor()
 
-    output += 'schema: ' + schema + '<br >\n'
-    output += 'host: ' + host + '<br >\n'
-    output += 'port: ' + port + '<br >\n'
-    output += 'user: ' + user + '<br >\n'
-    output += 'pass: ' + password + '<br >\n'
-
-#    # Connect to the python HANA DB driver using the connection info
-# User for HANA as a Service instances
-    if 'certificate' in hanass.credentials:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema,
-            encrypt="true",
-            sslValidateCertificate="true",
-            sslCryptoProvider="openssl",
-            sslTrustStore=haascert
-        )
-    else:
-        connection = dbapi.connect(
-            address=host,
-            port=int(port),
-            user=user,
-            password=password,
-            currentSchema=schema
-        )
-
-    #    # Prep a cursor for SQL execution
-    cursor = connection.cursor()
-
-#    # Form an SQL statement to retrieve some data
+    # Form an SQL statement to retrieve some data
 
 #https://blogs.sap.com/2017/07/26/sap-hana-2.0-sps02-new-feature-updated-python-driver/
 
