@@ -44,6 +44,7 @@ db_conn = ""
 ss_conn = ""
 cliusr = ""
 clipwd = ""
+loggedin = False
 
 def attach(port, host):
     try:
@@ -197,52 +198,37 @@ def python_links():
 @app.route('/cf-cli/test')
 def unauth_test():
 
+    global loggedin
+
     if ((not cliusr) and (not clipwd)):
         output += get_unpw()
 
     output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
 
-    return Response(output, mimetype='text/plain' , status=200,)
+    # return Response(output, mimetype='text/plain' , status=200,)
 
-    MyOut = subprocess.Popen(['cf', 'api'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-    stdout,stderr = MyOut.communicate()
+    if (not loggedin):
 
-    output += stdout.decode("utf-8") + "\n"
-    if stderr:
-        output += stderr + "\n"
+        MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout,stderr = MyOut.communicate()
 
-    MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-    stdout,stderr = MyOut.communicate()
+        output += stdout.decode("utf-8") + "\n"
+        if stderr:
+            output += stderr + "\n"
 
-    output += stdout.decode("utf-8") + "\n"
-    if stderr:
-        output += stderr + "\n"
+        MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        stdout,stderr = MyOut.communicate()
 
-    MyOut = subprocess.Popen(['cf', 'api'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-    stdout,stderr = MyOut.communicate()
+        output += stdout.decode("utf-8") + "\n"
+        if stderr:
+            output += stderr + "\n"
 
-    output += stdout.decode("utf-8") + "\n"
-    if stderr:
-        output += stderr + "\n"
+        loggedin = True
 
-    MyOut = subprocess.Popen(['cf', 'login', '-u', cliusr, '-p', clipwd, '-o', 'ConcileTime', '-s', 'dev'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-    stdout,stderr = MyOut.communicate()
-
-    output += stdout.decode("utf-8") + "\n"
-    if stderr:
-        output += stderr + "\n"
-
-    MyOut = subprocess.Popen(['cf', 'a'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
+    //Assume logged in here
+    MyOut = subprocess.Popen(['cf', 'a'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout,stderr = MyOut.communicate()
 
     output += stdout.decode("utf-8") + "\n"
