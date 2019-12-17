@@ -197,7 +197,7 @@ def python_links():
 @app.route('/cf-cli/test')
 def unauth_test():
 
-    if ((not cliusr) && (not clipwd)):
+    if ((not cliusr) and (not clipwd)):
         output += get_unpw()
 
     output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
