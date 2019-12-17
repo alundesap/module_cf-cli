@@ -225,7 +225,7 @@ def admin_getpw():
     global cliusr
     global clipwd
 
-    ss_conn = get_comm(hanass)
+    ss_conn = get_conn(hanass)
 
     # Prep a cursor for SQL execution
     cursor = ss_conn.cursor()
