@@ -205,9 +205,9 @@ def unauth_test():
 
     output = "CLIUser: " + cliusr + " CLIPass: " + "*****" + "\n\n"
 
-    # return Response(output, mimetype='text/plain' , status=200,)
+    return Response(output, mimetype='text/plain' , status=200,)
 
-    if (not loggedin):
+    if not loggedin:
 
         MyOut = subprocess.Popen(['cf', 'api', 'https://api.cf.us10.hana.ondemand.com'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout,stderr = MyOut.communicate()
