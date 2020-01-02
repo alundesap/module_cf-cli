@@ -241,6 +241,15 @@ def unauth_test():
     if stderr:
         output += stderr + "\n"
 
+    # Bind
+    MyOut = subprocess.Popen(['cf', 'bs', 'concile_cli_v0', 'CONCILE_COM'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout,stderr = MyOut.communicate()
+
+    output += stdout.decode("utf-8") + "\n"
+    if stderr:
+        output += stderr + "\n"
+
+
     return Response(output, mimetype='text/plain' , status=200,)
 
 @app.route('/cf-cli/admin')
