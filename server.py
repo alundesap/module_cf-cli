@@ -185,6 +185,7 @@ def dump_env():
     return output
 
 # Coming through the app-router
+@app.route('/cf-cli/')
 @app.route('/cf-cli/links')
 def python_links():
     output = '<strong>Hello World! I am instance ' + str(os.getenv("CF_INSTANCE_INDEX", 0)) + '</strong> Try these links.</br>\n'
